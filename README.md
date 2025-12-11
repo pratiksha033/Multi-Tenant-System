@@ -35,19 +35,19 @@ All connected using tenantId.
 
 
 
-# Create .env file:
+## Create .env file:
     ```bash
       DATABASE_URL="postgresql://postgres:password@localhost:5432/carboledger_mt?schema=public"
       PORT=3000
 
-# Start PostgreSQL (Docker)
+## Start PostgreSQL (Docker)
 
      Run PostgreSQL:
 
     docker run --name carboledger-postgres -e POSTGRES_PASSWORD=password -p 5432:5432 -d postgres:latest
 
 
-# Create the DB:
+## Create the DB:
 
     docker exec -it carboledger-postgres bash
     psql -U postgres
@@ -55,7 +55,7 @@ All connected using tenantId.
     \q
     exit
 
-# Install Dependencies & Migrate
+## Install Dependencies & Migrate
      npm install
     npx prisma migrate dev --name init
     npm run dev
@@ -69,15 +69,15 @@ All APIs require headers (except /tenants):
     Tenant-ID: <tenant-id>
     User-ID: <user-id>
 
-# API runs at:
+## API runs at:
         
     http://localhost:3000
 
-# Run Prisma Studio to visually check your database tables on localhost:5555:
+## Run Prisma Studio to visually check your database tables on localhost:5555:
 
     npx prisma studio 
 
 
-# After running the command, open this in your browser:
+## After running the command, open this in your browser:
 
     http://localhost:5555
