@@ -17,6 +17,22 @@ JavaScript
 
 Nodemon (dev)
 
+# 🏗 Database Schema (Prisma)
+
+Includes tables:
+
+Tenant
+
+User (with role)
+
+Material (with soft delete)
+
+Transaction
+
+All connected using tenantId.
+
+# ⚙️ Setup Instructions
+
 
 
 # Create .env file:
