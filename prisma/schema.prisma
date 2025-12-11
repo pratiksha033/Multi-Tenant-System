@@ -1,0 +1,92 @@
+// Database: PostgreSQL is documented here.
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// --- ENUMS ---
+enum TenantPlan {
+  FREE // Max 5 materials allowed
+  PRO  // Unlimited materials, access to analytics
+}
+
+enum UserRole {
+  ADMIN // Can create materials, perform all transactions
+  USER  // Can perform transactions, view materials
+}
+
+enum TransactionType {
+  IN
+  OUT
+}
+
+// --- CORE MODELS ---
+
+// 1. Tenant (Company)
+model Tenant {
+  id      String     @id @default(uuid())
+  name    String     @unique
+  plan    TenantPlan @default(FREE)
+  
+  users     User[]
+  materials Material[]
+  transactions Transaction[] // Though not strictly needed here, good for completeness
+}
+
+// 2. User
+model User {
+  id        String   @id @default(uuid())
+  tenantId  String
+  email     String   @unique
+  name      String
+  role      UserRole @default(USER)
+  createdAt DateTime @default(now())
+  
+  tenant    Tenant @relation(fields: [tenantId], references: [id])
+
+  @@unique([tenantId, email]) // Enforce unique email per tenant
+}
+
+// 3. Material
+model Material {
+  id              String         @id @default(uuid())
+  tenantId        String
+  name            String
+  unit            String         // e.g., "kg", "litre", "unit"
+  currentStock    Float          @default(0) // Use Float for inventory
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  
+  // BONUS: Soft Delete Implementation
+  deletedAt       DateTime? // If present, the material is considered soft-deleted
+
+  tenant          Tenant @relation(fields: [tenantId], references: [id])
+  transactions    Transaction[]
+
+  @@unique([tenantId, name]) // Enforce unique material name per tenant
+  @@index([tenantId]) // Index for faster row-level filtering
+}
+
+// 4. Transaction
+model Transaction {
+  id           String          @id @default(uuid())
+  tenantId     String
+  materialId   String
+  type         TransactionType
+  quantity     Float
+  
+  // Records the stock *before* the transaction
+  preTransactionStock Float
+  
+  createdAt    DateTime        @default(now())
+
+  tenant       Tenant @relation(fields: [tenantId], references: [id])
+  material     Material @relation(fields: [materialId], references: [id])
+
+  @@index([tenantId])
+  @@index([materialId])
+}
