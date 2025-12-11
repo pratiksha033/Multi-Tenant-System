@@ -45,9 +45,6 @@ Nodemon (dev)
     npm run dev
 
 
-# API runs at:
-        
-    http://localhost:3000
 
 # 📌 API Endpoints
 
@@ -55,3 +52,16 @@ All APIs require headers (except /tenants):
 
     Tenant-ID: <tenant-id>
     User-ID: <user-id>
+
+# API runs at:
+        
+    http://localhost:3000
+
+# Run Prisma Studio to visually check your database tables on localhost:5555:
+
+    npx prisma studio 
+
+
+# After running the command, open this in your browser:
+
+    http://localhost:5555
